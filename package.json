@@ -59,12 +59,12 @@
         "scm/resourceState/context": [
           {
             "command": "gitFileCommands.revertToPrevious",
-            "group": "inline",
+            "group": "3_modification",
             "when": "config.git.enabled && scmProvider == git"
           },
           {
             "command": "gitFileCommands.revertAndStash", 
-            "group": "inline",
+            "group": "3_modification",
             "when": "config.git.enabled && scmProvider == git"
           }
         ]
