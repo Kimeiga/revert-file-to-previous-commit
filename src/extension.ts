@@ -7,12 +7,17 @@ import { promisify } from "util";
 const execAsync = promisify(exec);
 
 export function activate(context: vscode.ExtensionContext) {
-  // Register command to revert to previous version
+  // Register command to revert to previous version for a single file
   const revertToPrevious = vscode.commands.registerCommand(
     "gitFileCommands.revertToPrevious",
-    async (uri) => {
+    async (uri: vscode.Uri, uris: vscode.Uri[]) => {
       try {
-        const filePaths = getSelectedFilePaths(uri);
+        const filePaths = getSelectedFilePaths(uri, uris);
+        if (filePaths.length === 0) {
+          vscode.window.showWarningMessage("No files selected to revert.");
+          return;
+        }
+
         for (const filePath of filePaths) {
           await revertFileToPreviousVersion(filePath);
         }
@@ -32,9 +37,16 @@ export function activate(context: vscode.ExtensionContext) {
   // Register command to revert to previous version and stash changes
   const revertAndStash = vscode.commands.registerCommand(
     "gitFileCommands.revertAndStash",
-    async (uri) => {
+    async (uri: vscode.Uri, uris: vscode.Uri[]) => {
       try {
-        const filePaths = getSelectedFilePaths(uri);
+        const filePaths = getSelectedFilePaths(uri, uris);
+        if (filePaths.length === 0) {
+          vscode.window.showWarningMessage(
+            "No files selected to revert and stash."
+          );
+          return;
+        }
+
         for (const filePath of filePaths) {
           await revertFileAndStashChanges(filePath);
         }
@@ -54,28 +66,42 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(revertToPrevious, revertAndStash);
 }
 
-function getSelectedFilePaths(uri: vscode.Uri): string[] {
-  // If uri is provided, use it
-  if (uri) {
-    return [uri.fsPath];
+function getSelectedFilePaths(uri?: vscode.Uri, uris?: vscode.Uri[]): string[] {
+  const filePaths: string[] = [];
+
+  // 1. First, handle the case when multiple URIs are passed directly (multi-select)
+  if (uris && uris.length > 0) {
+    return uris
+      .map((u) => u.fsPath)
+      .filter((path) => {
+        try {
+          return !fs.statSync(path).isDirectory();
+        } catch (e) {
+          return false;
+        }
+      });
   }
 
-  // Otherwise get the currently selected files in the explorer
-  const filePaths: string[] = [];
+  // 2. Next, handle a single URI passed directly
+  if (uri) {
+    const path = uri.fsPath;
+    try {
+      // Skip if it's a directory
+      if (fs.statSync(path).isDirectory()) {
+        return [];
+      }
+      return [path];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  // 3. Finally, fallback to the active editor if nothing else is available
   if (vscode.window.activeTextEditor) {
     filePaths.push(vscode.window.activeTextEditor.document.uri.fsPath);
   }
 
-  // Also get selected files in the explorer view
-  const selectedFiles = vscode.window.activeTextEditor
-    ? [vscode.window.activeTextEditor.document.uri]
-    : vscode.workspace.workspaceFolders
-    ? [vscode.workspace.workspaceFolders[0].uri]
-    : [];
-
-  return filePaths.length > 0
-    ? filePaths
-    : selectedFiles.map((uri) => uri.fsPath);
+  return filePaths;
 }
 
 async function getRepoRoot(filePath: string): Promise<string> {

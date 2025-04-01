@@ -6,11 +6,20 @@
     "engines": {
       "vscode": "^1.75.0"
     },
+    "activationEvents": [
+      "onCommand:gitFileCommands.revertToPrevious",
+      "onCommand:gitFileCommands.revertAndStash"
+    ],
     "categories": [
       "SCM Providers",
       "Other"
     ],
     "main": "./out/extension.js",
+    "publisher": "kimeiga",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kimeiga/revert-file-to-previous-commit"
+    },
     "contributes": {
       "commands": [
         {
@@ -26,25 +35,25 @@
         "explorer/context": [
           {
             "command": "gitFileCommands.revertToPrevious",
-            "group": "git",
-            "when": "config.git.enabled && resourceInLocalGitRepo"
+            "group": "7_modification",
+            "when": "config.git.enabled && gitOpenRepositoryCount != 0"
           },
           {
             "command": "gitFileCommands.revertAndStash",
-            "group": "git",
-            "when": "config.git.enabled && resourceInLocalGitRepo"
+            "group": "7_modification",
+            "when": "config.git.enabled && gitOpenRepositoryCount != 0"
           }
         ],
         "editor/context": [
           {
             "command": "gitFileCommands.revertToPrevious",
-            "group": "git",
-            "when": "config.git.enabled && resourceInLocalGitRepo"
+            "group": "7_modification",
+            "when": "config.git.enabled && gitOpenRepositoryCount != 0"
           },
           {
             "command": "gitFileCommands.revertAndStash",
-            "group": "git",
-            "when": "config.git.enabled && resourceInLocalGitRepo"
+            "group": "7_modification",
+            "when": "config.git.enabled && gitOpenRepositoryCount != 0"
           }
         ],
         "scm/resourceState/context": [
@@ -54,7 +63,7 @@
             "when": "config.git.enabled && scmProvider == git"
           },
           {
-            "command": "gitFileCommands.revertAndStash",
+            "command": "gitFileCommands.revertAndStash", 
             "group": "inline",
             "when": "config.git.enabled && scmProvider == git"
           }
