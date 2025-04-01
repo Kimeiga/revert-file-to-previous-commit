@@ -2,7 +2,7 @@
 
 This VSCode extension adds advanced Git functionality to easily revert files to previous versions and stash changes.
 
-## Features
+## Featuresasdfas
 
 This extension adds two context menu options when right-clicking on files in the Explorer or Editor:
 
@@ -73,4 +73,5 @@ Initial release with basic functionality:
 
 - Revert to previous version
 - Revert to previous version and stash changes
+
 # revert-file-to-previous-commit
