@@ -1,0 +1,29 @@
+# Compiled output
+out/
+dist/
+
+# Dependency directories
+node_modules/
+
+# Extension package
+*.vsix
+
+# Environment
+.env
+.DS_Store
+
+# Testing
+.vscode-test/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor-specific files
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json 

@@ -1,0 +1,80 @@
+{
+    "name": "revert-file-to-previous-commit",
+    "displayName": "Revert File to Previous Commit",
+    "description": "Adds right-click options for reverting files to previous commit",
+    "version": "0.1.0",
+    "engines": {
+      "vscode": "^1.75.0"
+    },
+    "categories": [
+      "SCM Providers",
+      "Other"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+      "commands": [
+        {
+          "command": "gitFileCommands.revertToPrevious",
+          "title": "Git: Revert to Previous Version"
+        },
+        {
+          "command": "gitFileCommands.revertAndStash",
+          "title": "Git: Revert to Previous Version and Stash Changes"
+        }
+      ],
+      "menus": {
+        "explorer/context": [
+          {
+            "command": "gitFileCommands.revertToPrevious",
+            "group": "git",
+            "when": "config.git.enabled && resourceInLocalGitRepo"
+          },
+          {
+            "command": "gitFileCommands.revertAndStash",
+            "group": "git",
+            "when": "config.git.enabled && resourceInLocalGitRepo"
+          }
+        ],
+        "editor/context": [
+          {
+            "command": "gitFileCommands.revertToPrevious",
+            "group": "git",
+            "when": "config.git.enabled && resourceInLocalGitRepo"
+          },
+          {
+            "command": "gitFileCommands.revertAndStash",
+            "group": "git",
+            "when": "config.git.enabled && resourceInLocalGitRepo"
+          }
+        ],
+        "scm/resourceState/context": [
+          {
+            "command": "gitFileCommands.revertToPrevious",
+            "group": "inline",
+            "when": "config.git.enabled && scmProvider == git"
+          },
+          {
+            "command": "gitFileCommands.revertAndStash",
+            "group": "inline",
+            "when": "config.git.enabled && scmProvider == git"
+          }
+        ]
+      }
+    },
+    "scripts": {
+      "vscode:prepublish": "npm run compile",
+      "compile": "tsc -p ./",
+      "watch": "tsc -watch -p ./",
+      "pretest": "npm run compile && npm run lint",
+      "lint": "eslint src --ext ts",
+      "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+      "@types/vscode": "^1.60.0",
+      "@types/node": "^16.11.7",
+      "@typescript-eslint/eslint-plugin": "^5.42.0",
+      "@typescript-eslint/parser": "^5.42.0",
+      "eslint": "^8.26.0",
+      "typescript": "^4.8.4"
+    }
+  }
